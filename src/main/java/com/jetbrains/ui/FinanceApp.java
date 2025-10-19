@@ -11,7 +11,8 @@ import java.util.Locale;
 
 public class FinanceApp {
     public static void main(String[] args) {
-        Locale.setDefault(Locale.US);
+        // Use UK locale so currency displays as £ and follows UK formatting
+        Locale.setDefault(Locale.UK);
         SwingUtilities.invokeLater(() -> {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

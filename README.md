@@ -11,6 +11,12 @@ What you can do:
 - Export the selected month to CSV (transactions-YYYY-MM.csv by default)
 - Data is saved between runs in an easy-to-read text format
 
+UI notes (new)
+- Light-only, rounded, pastel aesthetic with clearer layout and larger primary numbers.
+- A donut overview in Summary visualises Income vs Expenses with Net in the centre.
+- Currency and formatting use UK conventions (pound symbol £ and UK number formatting).
+- Toolbar and buttons have a flat, pill-shaped look for easier scanning.
+
 ## Requirements
 - Windows
 - JDK 17+ (javac/java available in PATH). Check with:
@@ -29,10 +35,9 @@ run.bat
 
 GUI quick tour:
 - Top bar: Previous/Next month, Select Month, Add Expense/Income, Export CSV, Save
-- Tabs:
-  - Summary: income, expenses, net; budgets with spent/remaining for the selected month
-  - Transactions: list, add, edit, delete
-  - Budgets: manage categories and monthly limits
+- Summary tab: cards for Income/Expenses/Net + a donut chart and a budgets table with progress bars
+- Transactions: list, add, edit, delete
+- Budgets: manage categories and monthly limits
 
 All actions save to `finance-data.txt` (in the project root). CSV export writes a file like `transactions-YYYY-MM.csv`.
 

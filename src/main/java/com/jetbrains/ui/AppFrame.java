@@ -15,10 +15,13 @@ public class AppFrame extends JFrame {
     private YearMonth currentMonth;
 
     private final JLabel monthLabel = new JLabel();
-    private SummaryPanel summaryPanel;
-    private TransactionsPanel transactionsPanel;
-    private BudgetsPanel budgetsPanel;
+    private final SummaryPanel summaryPanel;
+    private final TransactionsPanel transactionsPanel;
+    private final BudgetsPanel budgetsPanel;
     private final JLabel statusLabel = new JLabel("Ready");
+
+    // keep a reference to the top bar so we can reapply styles when theme changes
+    private final JPanel topBar;
 
     public AppFrame(FinanceService service, YearMonth startMonth) {
         super("Personal Finance");
@@ -41,20 +44,34 @@ public class AppFrame extends JFrame {
         tabs.addTab("Budgets", budgetsPanel);
 
         // Top bar
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton prevBtn = new JButton("◀ Prev"); prevBtn.setToolTipText("Go to previous month");
-        JButton nextBtn = new JButton("Next ▶"); nextBtn.setToolTipText("Go to next month");
-        JButton selectBtn = new JButton("Select Month..."); selectBtn.setToolTipText("Jump to a specific month (YYYY-MM)");
-        JButton exportBtn = new JButton("Export CSV"); exportBtn.setToolTipText("Export transactions for the current month to CSV");
-        JButton addIncomeBtn = new JButton("Add Income"); addIncomeBtn.setToolTipText("Record an income for this month");
-        JButton addExpenseBtn = new JButton("Add Expense"); addExpenseBtn.setToolTipText("Record an expense for this month");
-        JButton saveBtn = new JButton("Save"); saveBtn.setToolTipText("Save data to " + service.getDataFile().toAbsolutePath());
+        topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topBar.setOpaque(true);
+        topBar.setBackground(UIUtils.topBarBackground());
+
+        JButton prevBtn = new JButton("◀ Prev"); prevBtn.setToolTipText("Go to previous month"); UIUtils.styleButton(prevBtn);
+        JButton nextBtn = new JButton("Next ▶"); nextBtn.setToolTipText("Go to next month"); UIUtils.styleButton(nextBtn);
+        JButton selectBtn = new JButton("Select Month..."); selectBtn.setToolTipText("Jump to a specific month (YYYY-MM)"); UIUtils.styleButton(selectBtn);
+        JButton exportBtn = new JButton("Export CSV"); exportBtn.setToolTipText("Export transactions for the current month to CSV"); UIUtils.styleButton(exportBtn);
+        JButton addIncomeBtn = new JButton("Add Income"); addIncomeBtn.setToolTipText("Record an income for this month"); UIUtils.styleButton(addIncomeBtn);
+        JButton addExpenseBtn = new JButton("Add Expense"); addExpenseBtn.setToolTipText("Record an expense for this month"); UIUtils.styleButton(addExpenseBtn);
+        JButton saveBtn = new JButton("Save"); saveBtn.setToolTipText("Save data to " + service.getDataFile().toAbsolutePath()); UIUtils.styleButton(saveBtn);
         monthLabel.setFont(monthLabel.getFont().deriveFont(Font.BOLD, 14f));
-        top.add(prevBtn); top.add(monthLabel); top.add(nextBtn); top.add(selectBtn);
-        top.add(Box.createHorizontalStrut(20));
-        top.add(addExpenseBtn); top.add(addIncomeBtn);
-        top.add(Box.createHorizontalStrut(20));
-        top.add(exportBtn); top.add(saveBtn);
+
+        // Optional icons (place PNG/SVG/etc under src/main/resources/icons/ with these names)
+        ImageIcon ic;
+        ic = UIUtils.loadIcon("icons/prev.png"); if (ic != null) prevBtn.setIcon(ic);
+        ic = UIUtils.loadIcon("icons/next.png"); if (ic != null) nextBtn.setIcon(ic);
+        ic = UIUtils.loadIcon("icons/select.png"); if (ic != null) selectBtn.setIcon(ic);
+        ic = UIUtils.loadIcon("icons/export.png"); if (ic != null) exportBtn.setIcon(ic);
+        ic = UIUtils.loadIcon("icons/income.png"); if (ic != null) addIncomeBtn.setIcon(ic);
+        ic = UIUtils.loadIcon("icons/expense.png"); if (ic != null) addExpenseBtn.setIcon(ic);
+        ic = UIUtils.loadIcon("icons/save.png"); if (ic != null) saveBtn.setIcon(ic);
+
+        topBar.add(prevBtn); topBar.add(monthLabel); topBar.add(nextBtn); topBar.add(selectBtn);
+        topBar.add(Box.createHorizontalStrut(20));
+        topBar.add(addExpenseBtn); topBar.add(addIncomeBtn);
+        topBar.add(Box.createHorizontalStrut(20));
+        topBar.add(exportBtn); topBar.add(saveBtn);
 
         prevBtn.addActionListener(e -> { currentMonth = currentMonth.minusMonths(1); refreshAll(); });
         nextBtn.addActionListener(e -> { currentMonth = currentMonth.plusMonths(1); refreshAll(); });
@@ -74,7 +91,7 @@ public class AppFrame extends JFrame {
         status.add(pathLbl, BorderLayout.EAST);
 
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(top, BorderLayout.NORTH);
+        getContentPane().add(topBar, BorderLayout.NORTH);
         getContentPane().add(tabs, BorderLayout.CENTER);
         getContentPane().add(status, BorderLayout.SOUTH);
 
@@ -98,6 +115,7 @@ public class AppFrame extends JFrame {
         mb.add(file); mb.add(help);
         return mb;
     }
+
 
     private void showQuickStart() {
         JOptionPane.showMessageDialog(this,
