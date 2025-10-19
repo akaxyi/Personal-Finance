@@ -51,7 +51,8 @@ public class TransactionsPanel extends JPanel {
         filterBar.add(hint);
 
         add(tb, BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        // use helper to remove gray gutter and keep white content
+        add(UIUtils.wrapTable(table), BorderLayout.CENTER);
         add(filterBar, BorderLayout.SOUTH);
 
         addExp.addActionListener(e -> addTransactionDialog(TransactionType.EXPENSE));
@@ -61,7 +62,7 @@ public class TransactionsPanel extends JPanel {
         refresh.addActionListener(e -> refresh());
 
         table.setFillsViewportHeight(true);
-        table.setRowHeight(30);
+        table.setRowHeight(34);
         table.setAutoCreateRowSorter(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setToolTipText("Transactions for the selected month");
@@ -69,6 +70,8 @@ public class TransactionsPanel extends JPanel {
         table.setIntercellSpacing(new java.awt.Dimension(0, 6));
         // Avoid content getting squashed by enabling horizontal scrolling
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        // Style header to match theme
+        UIUtils.styleTable(table);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override public void mouseClicked(java.awt.event.MouseEvent e) {
                 if (e.getClickCount() == 2 && table.getSelectedRow() >= 0) {
@@ -146,6 +149,7 @@ public class TransactionsPanel extends JPanel {
 
     public void refresh() {
         model.setRows(service.getTransactionsForMonth(monthSupplier.get()));
+        UIUtils.styleTable(table);
     }
 
     public void addTransactionDialog(TransactionType type) {

@@ -4,6 +4,11 @@ setlocal ENABLEDELAYEDEXPANSION
 REM Compile and run the GUI Personal Finance app (Swing) without console
 if not exist target mkdir target
 
+REM Copy resources (icons, etc.) into target so they are on the classpath
+if exist src\main\resources (
+  xcopy /E /I /Y src\main\resources target >nul 2>nul
+)
+
 javac -encoding UTF-8 -d target ^
   src\main\java\com\jetbrains\finance\model\*.java ^
   src\main\java\com\jetbrains\finance\service\*.java ^
@@ -19,5 +24,6 @@ if errorlevel 1 (
   exit /b 1
 )
 
-start "" javaw -cp target com.jetbrains.ui.FinanceApp
+REM Include both compiled classes in target and raw resources on the classpath
+start "" javaw -cp target;src\main\resources com.jetbrains.ui.FinanceApp
 endlocal

@@ -20,7 +20,6 @@ public class SummaryPanel extends JPanel {
     private final JLabel expenseLbl = new JLabel();
     private final JLabel netLbl = new JLabel();
     private final JTable budgetTable = new JTable();
-    private final DonutChart donut = new DonutChart();
 
     public SummaryPanel(FinanceService service, Supplier<YearMonth> monthSupplier) {
         super(new BorderLayout(10,10));
@@ -52,23 +51,15 @@ public class SummaryPanel extends JPanel {
         top.add(cards, BorderLayout.CENTER);
         add(top, BorderLayout.NORTH);
 
-        // Middle area: Donut chart above budgets table
-        JPanel center = new JPanel(new BorderLayout(10,10));
-        UIUtils.RoundedPanel donutWrap = new UIUtils.RoundedPanel(new BorderLayout(), 24);
-        donutWrap.setBackground(new Color(248, 250, 252));
-        donutWrap.setBorder(BorderFactory.createEmptyBorder(10,12,10,12));
-        donutWrap.add(donut, BorderLayout.CENTER);
-        center.add(donutWrap, BorderLayout.NORTH);
-
+        // Center: budgets table only (donut moved to Analytics)
         budgetTable.setFillsViewportHeight(true);
         budgetTable.setRowHeight(30);
         budgetTable.setShowGrid(false);
         budgetTable.setIntercellSpacing(new java.awt.Dimension(0, 6));
         budgetTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        JScrollPane sp = new JScrollPane(budgetTable);
-        sp.setBorder(BorderFactory.createEmptyBorder());
-        center.add(sp, BorderLayout.CENTER);
-        add(center, BorderLayout.CENTER);
+        UIUtils.styleTable(budgetTable);
+        JScrollPane sp = UIUtils.wrapTable(budgetTable);
+        add(sp, BorderLayout.CENTER);
 
         JLabel hint = new JLabel("Tip: Set budgets in the Budgets tab. Expenses roll up by category.");
         hint.setForeground((Color)UIManager.get("Label.foreground"));
@@ -97,8 +88,6 @@ public class SummaryPanel extends JPanel {
         incomeLbl.setText(UIUtils.CURRENCY.format(s.totalIncome()));
         expenseLbl.setText(UIUtils.CURRENCY.format(s.totalExpense()));
         netLbl.setText(UIUtils.CURRENCY.format(s.net()));
-        // Donut represents income vs expenses, centre shows net
-        donut.setData(s.totalIncome(), s.totalExpense(), UIUtils.CURRENCY.format(s.net()));
 
         Map<String, BigDecimal> budgets = service.getBudgets();
         Map<String, BigDecimal> spent = service.getSpentByCategory(ym);

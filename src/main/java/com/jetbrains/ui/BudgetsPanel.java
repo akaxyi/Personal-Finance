@@ -37,7 +37,8 @@ public class BudgetsPanel extends JPanel {
         table.setRowHeight(30);
         table.setAutoCreateRowSorter(true);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        add(UIUtils.wrapTable(table), BorderLayout.CENTER);
+        UIUtils.styleTable(table);
 
         JLabel hint = new JLabel("Tip: Budgets are monthly caps per category. Removing a budget does not delete past expenses.");
         hint.setForeground((Color)UIManager.get("Label.foreground"));
@@ -90,6 +91,7 @@ public class BudgetsPanel extends JPanel {
             table.getColumnModel().getColumn(0).setPreferredWidth(260);
             table.getColumnModel().getColumn(1).setPreferredWidth(160);
         } catch (Exception ignored) {}
+        UIUtils.styleTable(table);
         // reattach persistence listeners to the (possibly) new column model and reapply saved state
         attachColumnModelPersistence();
         SwingUtilities.invokeLater(() -> UIUtils.loadTableState(table, "budgets"));
