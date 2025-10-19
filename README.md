@@ -22,4 +22,4 @@ If you have an installer (.exe) built for you:
 - Double-click the installer and follow the prompts.
 - Launch "PersonalFinance" from the Start Menu or desktop shortcut.
 - Your data file is stored here on Windows: `%LOCALAPPDATA%\PersonalFinance\finance-data.txt`.
-- 
+
