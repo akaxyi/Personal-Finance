@@ -6,6 +6,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.JOptionPane;
 import java.nio.file.Path;
+import java.nio.file.Files;
 import java.time.YearMonth;
 import java.util.Locale;
 
@@ -18,7 +19,7 @@ public class FinanceApp {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception ignored) {}
             UIUtils.initLookAndFeel();
-            var dataPath = Path.of(System.getProperty("user.dir"), "finance-data.txt");
+            var dataPath = defaultDataPath();
             var service = new FinanceService(dataPath);
             AppFrame frame = new AppFrame(service, YearMonth.now());
             frame.setVisible(true);
@@ -27,5 +28,26 @@ public class FinanceApp {
                     "Quick Start",
                     JOptionPane.INFORMATION_MESSAGE);
         });
+    }
+
+    private static Path defaultDataPath() {
+        String os = System.getProperty("os.name", "").toLowerCase(Locale.ROOT);
+        Path base;
+        if (os.contains("win")) {
+            String localAppData = System.getenv("LOCALAPPDATA");
+            if (localAppData != null && !localAppData.isBlank()) {
+                base = Path.of(localAppData, "PersonalFinance");
+            } else {
+                base = Path.of(System.getProperty("user.home", "."), "AppData", "Local", "PersonalFinance");
+            }
+        } else if (os.contains("mac")) {
+            base = Path.of(System.getProperty("user.home", "."), "Library", "Application Support", "PersonalFinance");
+        } else {
+            base = Path.of(System.getProperty("user.home", "."), ".local", "share", "personal-finance");
+        }
+        try {
+            Files.createDirectories(base);
+        } catch (Exception ignored) {}
+        return base.resolve("finance-data.txt");
     }
 }

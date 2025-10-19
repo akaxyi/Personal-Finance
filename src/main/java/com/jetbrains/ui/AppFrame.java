@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Files;
 import java.time.YearMonth;
 
 public class AppFrame extends JFrame {
@@ -260,14 +261,31 @@ public class AppFrame extends JFrame {
 
     private void onExportCsv(ActionEvent e) {
         String defaultName = "transactions-" + currentMonth + ".csv";
-        String name = JOptionPane.showInputDialog(this, "Export file name:", defaultName);
+        Path defaultDir = getDefaultExportDir();
+        String suggested = defaultDir.resolve(defaultName).toString();
+        String name = JOptionPane.showInputDialog(this, "Export file path:", suggested);
         if (name == null || name.isBlank()) return;
         try {
-            var out = service.exportCsv(Path.of(name.trim()), currentMonth);
+            Path chosen = Path.of(name.trim());
+            Path target = chosen.isAbsolute() ? chosen : defaultDir.resolve(chosen);
+            var out = service.exportCsv(target, currentMonth);
             statusLabel.setText("Exported CSV: " + out.getFileName());
             JOptionPane.showMessageDialog(this, "Exported to\n" + out.toAbsolutePath());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Export failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private Path getDefaultExportDir() {
+        try {
+            String userHome = System.getProperty("user.home", ".");
+            Path docs = Path.of(userHome, "Documents");
+            if (Files.isDirectory(docs)) return docs;
+            Path downloads = Path.of(userHome, "Downloads");
+            if (Files.isDirectory(downloads)) return downloads;
+            return Path.of(userHome);
+        } catch (Exception ex) {
+            return Path.of(".");
         }
     }
 

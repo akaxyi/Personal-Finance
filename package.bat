@@ -9,6 +9,11 @@ set MAIN_CLASS=com.jetbrains.ui.FinanceApp
 if not exist %TARGET% mkdir %TARGET%
 if not exist %DIST% mkdir %DIST%
 
+REM Copy resources (icons, fonts, etc.) into target so they end up inside the jar
+if exist src\main\resources (
+  xcopy /E /I /Y src\main\resources %TARGET% >nul 2>nul
+)
+
 REM Resolve Java tools
 set JAVAC=javac
 set JAR=
@@ -20,12 +25,10 @@ if not defined JAR (
 if exist "%JAVA_HOME%\bin\javac.exe" set "JAVAC=%JAVA_HOME%\bin\javac.exe"
 
 echo [1/3] Compiling sources to %TARGET% using: %JAVAC%
-"%JAVAC%" -encoding UTF-8 -d %TARGET% ^
-  src\main\java\com\jetbrains\finance\model\*.java ^
-  src\main\java\com\jetbrains\finance\service\*.java ^
-  src\main\java\com\jetbrains\finance\store\*.java ^
-  src\main\java\com\jetbrains\ui\*.java ^
-  src\main\java\com\jetbrains\Main.java
+set SRCLIST=%TARGET%\sources.txt
+if exist "%SRCLIST%" del /Q "%SRCLIST%" >nul 2>nul
+cmd /c dir /S /B src\main\java\*.java > "%SRCLIST%"
+"%JAVAC%" -encoding UTF-8 -d %TARGET% @"%SRCLIST%"
 if errorlevel 1 (
   echo Compile failed. Ensure JDK is installed and in PATH (or JAVA_HOME set).
   echo Detected JAVA_HOME=%JAVA_HOME%
@@ -64,6 +67,7 @@ if errorlevel 1 (
 )
 
 echo.
+
 echo Built JAR: %JAR_FILE%
 echo Run it with:
 echo   javaw -jar "%JAR_FILE%"
