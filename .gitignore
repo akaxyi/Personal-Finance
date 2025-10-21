@@ -1,5 +1,8 @@
 # Build output
 /target/
+/dist/*
+!/dist/PersonalFinance.zip
+!/dist/PersonalFinance-Setup-*.exe
 *.class
 
 # IDE files
@@ -18,13 +21,9 @@ Thumbs.db
 # User data (don't commit personal finance data)
 /finance-data.txt
 
-# Batch scripts and local run artifacts
-*.bat
-
 # Maven
 .mvn/
 settings.xml
 
 # Generated sources
 /generated-sources/
-
