@@ -168,8 +168,9 @@ public class FinanceService {
                 bw.write(csv(t.getType().name())); bw.write(',');
                 bw.write(csv(t.getDate().toString())); bw.write(',');
                 bw.write(csv(t.getAmount().toPlainString())); bw.write(',');
-                bw.write(csv(t.getCategory() == null ? "" : t.getCategory())); bw.write(',');
-                bw.write(csv(t.getDescription() == null ? "" : t.getDescription())); bw.write('\n');
+                // Guard against CSV formula injection for user-entered fields
+                bw.write(csv(formulaSafe(t.getCategory() == null ? "" : t.getCategory()))); bw.write(',');
+                bw.write(csv(formulaSafe(t.getDescription() == null ? "" : t.getDescription()))); bw.write('\n');
             }
         }
         return file;
@@ -181,5 +182,23 @@ public class FinanceService {
             return '"' + v + '"';
         }
         return v;
+    }
+
+    private static String formulaSafe(String s) {
+        if (s == null || s.isEmpty()) return "";
+        String trimmed = trimLeadingSpaces(s);
+        if (!trimmed.isEmpty()) {
+            char c = trimmed.charAt(0);
+            if (c == '=' || c == '+' || c == '-' || c == '@') {
+                return "'" + s; // prefix apostrophe to render as literal in Excel/Sheets
+            }
+        }
+        return s;
+    }
+
+    private static String trimLeadingSpaces(String s) {
+        int i = 0;
+        while (i < s.length() && Character.isWhitespace(s.charAt(i))) i++;
+        return s.substring(i);
     }
 }
