@@ -3,8 +3,9 @@
 A tiny, dependency-free desktop app to track income and expenses. No installation or Java required.
 
 ## Download
-- Direct download (current build): [dist/PersonalFinance.zip](dist/PersonalFinance.zip)
-- If the link above doesn’t work, open this repository’s Releases page and download `PersonalFinance.zip`.
+- Latest release (recommended): https://github.com/akaxyi/app/releases/latest/download/PersonalFinance.zip
+- If that link doesn’t work, open the Releases page and download `PersonalFinance.zip`:
+  https://github.com/akaxyi/app/releases
 
 ## Run it
 1) Download the ZIP above.

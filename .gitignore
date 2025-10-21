@@ -18,9 +18,6 @@ Thumbs.db
 # Logs
 *.log
 
-# User data (don't commit personal finance data)
-/finance-data.txt
-
 # Maven
 .mvn/
 settings.xml
