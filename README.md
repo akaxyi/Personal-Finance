@@ -2,19 +2,6 @@
 
 A tiny, dependency-free personal finance desktop app (Swing). You can package it as a native Windows installer or as a portable folder that includes a private JRE—so end users don't need Java or Maven.
 
-## Download
-- Direct download (current build in this repo): [dist/PersonalFinance.zip](dist/PersonalFinance.zip)
-- Windows installer (recommended): see this repository’s Releases page and download the latest `PersonalFinance-Setup-<version>.exe`.
-- Portable ZIP (no install): on the Releases page, download `PersonalFinance.zip`, extract it, and run `PersonalFinance\PersonalFinance.exe`.
-
-Maintainers: to produce and upload the ZIP locally, run:
-
-```bat
-zip-portable.bat
-```
-
-This creates `dist\PersonalFinance.zip`. Attach that ZIP (and the installer from `dist\`) to a new GitHub Release, then these download instructions will apply to end users.
-
 What you can do:
 - Create and update budget categories with monthly limits
 - Record expenses and incomes
@@ -56,12 +43,6 @@ Build a portable app image (folder with .exe + bundled JRE):
 
 ```bat
 build-portable.bat
-```
-
-Zip the portable app (creates `dist\PersonalFinance.zip`):
-
-```bat
-zip-portable.bat
 ```
 
 Output appears under `dist/`.
@@ -124,6 +105,6 @@ INCOME|2025-10-15|2000.00|INCOME|Salary
 - No external libraries are used. All persistence is plain-text for easy portability.
 
 ## Next steps (optional)
-- Automate Releases (CI) to build and attach the installer and ZIP on tag
 - Export summaries (budgets and totals) across multiple months
 - Category deletions and renames affecting historical data
+- Packaging into a runnable JAR or installer
